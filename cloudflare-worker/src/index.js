@@ -24,7 +24,7 @@
  * Secrets are set with `wrangler secret put`, never committed.
  */
 
-const REPO = "cityrider503-ux/bou-exchange-rates";
+const REPO = "dree-max/bou-exchange-rates";
 const WORKFLOW = "send-rates.yml";
 
 /**
