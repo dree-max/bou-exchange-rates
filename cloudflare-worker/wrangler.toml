@@ -17,7 +17,7 @@ compatibility_date = "2026-09-30"
 # Thursday and would silently skip every Friday. The names are unambiguous on
 # both systems. GitHub's own cron in send-rates.yml legitimately keeps `1-5`.
 [triggers]
-crons = ["30 4 * * mon-fri"]
+crons = ["30 5 * * mon-fri"]
 
 # Without this the Worker keeps no logs at all, so a failed dispatch is
 # invisible: no GitHub run, no error, nothing to diagnose. It was off when the
