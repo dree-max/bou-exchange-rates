@@ -4,8 +4,8 @@ name: Cloudflare dispatch backstop
 # this workflow fires a rescue dispatch and opens one issue for visibility.
 on:
   schedule:
-    # 05:15 UTC = 08:15 EAT, after the intended 07:30 EAT trigger window.
-    - cron: "15 5 * * 1-5"
+    # 06:15 UTC = 09:15 EAT, after the intended 08:30 EAT trigger window.
+    - cron: "15 6 * * 1-5"
   workflow_dispatch:
 
 permissions:
@@ -88,13 +88,13 @@ jobs:
 
             if [ "$existing" = "0" ]; then
               body=$(cat <<EOF
-              No \`Send BOU exchange rates (cloudflare-cron)\` run was detected on ${today_eat} by 08:15 EAT.
+              No \`Send BOU exchange rates (cloudflare-cron)\` run was detected on ${today_eat} by 09:15 EAT.
 
               The backstop workflow dispatched \`send-rates.yml\` to keep delivery on time.
 
               Check:
               1. Cloudflare Worker \`bou-rates-trigger\` → Observability for a missing or failed cron invocation.
-              2. Cloudflare Worker trigger configuration is still \`30 4 * * mon-fri\`.
+              2. Cloudflare Worker trigger configuration is still \`30 5 * * mon-fri\`.
               3. Worker secret \`GH_TOKEN\` is present and valid.
 
               Raised by \`cloudflare-dispatch-backstop.yml\`.
