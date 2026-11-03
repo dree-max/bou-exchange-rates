@@ -3,22 +3,21 @@ run-name: Send BOU exchange rates${{ github.event_name == 'workflow_dispatch' &&
 
 on:
   # GitHub's scheduler is best-effort and this repo has measured 2h50m-6h19m
-  # late on the free tier, so this cannot reliably hit 07:30 EAT. It is
+  # late on the free tier, so this cannot reliably hit 08:30 EAT. It is
   # restored anyway: a late email is worth far more than none, and it is the
   # only scheduler currently known to actually execute.
   #
-  # The Cloudflare Worker (cloudflare-worker/) is meant to be the punctual
-  # path, dispatching this same workflow at 04:30 UTC = 07:30 EAT. Its cron
-  # trigger is registered but has never executed, so this cron carries the
-  # schedule until that is resolved.
+  # The Cloudflare Worker (cloudflare-worker/) is the punctual path,
+  # dispatching this same workflow at 05:30 UTC = 08:30 EAT. This later
+  # GitHub schedule remains as a safety net if Cloudflare misses its dispatch.
   #
   # Because both can be live at once, the "skip if already sent" step below
   # makes the run idempotent: whichever fires first sends, and any later run
   # on the same EAT day exits cleanly. That keeps the eventual switch back to
   # the Worker free of duplicate emails.
   schedule:
-    # 04:30 UTC = 07:30 EAT. GitHub starts this whenever it gets to it.
-    - cron: "30 2 * * 1-5"
+    # 05:45 UTC = 08:45 EAT, after the Cloudflare trigger.
+    - cron: "45 5 * * 1-5"
   workflow_dispatch:
     inputs:
       trigger_source:

@@ -2,16 +2,16 @@
 
 A tiny Cloudflare Worker that fires the
 [`send-rates.yml`](../.github/workflows/send-rates.yml) GitHub Actions
-workflow at **07:30 EAT every weekday**.
+workflow at **08:30 EAT every weekday**.
 
 ## Status: trigger registered, with GitHub backstop active
 
 The Worker is deployed and its cron trigger is registered as
-`30 4 * * mon-fri`.
+`30 5 * * mon-fri`.
 
 To prevent missed mornings while Cloudflare reliability is being verified, the
 repository now includes `.github/workflows/cloudflare-dispatch-backstop.yml`.
-At 08:15 EAT on weekdays, it checks whether `send-rates.yml` has already run
+At 09:15 EAT on weekdays, it checks whether `send-rates.yml` has already run
 successfully; if not, it dispatches a rescue run and opens one issue for the
 day when no earlier Cloudflare-triggered dispatch was seen.
 
@@ -26,7 +26,7 @@ successful run already happened that day, so the paths cannot double-email.
 ## Why this exists
 
 GitHub Actions schedules are best-effort. Measured delays on this repo
-(free tier) ranged from **2h55m to 6h19m** — a 07:30 EAT schedule
+(free tier) ranged from **2h55m to 6h19m** — an 08:30 EAT schedule
 actually executed at 13:49 EAT. That misses an 08:00 deadline.
 
 Cloudflare Workers cron is meant to fire reliably to the minute. The Worker only
@@ -35,7 +35,7 @@ Actions, so the existing repository secrets are used unchanged and no
 new secret is introduced into the scrape path.
 
 Measured job duration: the scrape takes ~75s, the full Actions job ~3
-minutes. So a 07:30 dispatch puts the email in the inbox around 07:33.
+minutes. So an 08:30 dispatch puts the email in the inbox around 08:33.
 
 ## Setup
 
@@ -141,7 +141,7 @@ Worker log rather than silence.
    from a weekend — nothing dispatched, nothing to diagnose.
 2. **The repository's Actions tab.** No `send-rates` run whatsoever means the
    Worker never dispatched, rather than the job having run and failed.
-3. **Settings → Triggers.** Confirm the schedule is still `30 4 * * mon-fri`.
+3. **Settings → Triggers.** Confirm the schedule is still `30 5 * * mon-fri`.
 
 ### Weekdays are not portable between the two schedulers
 
@@ -157,10 +157,10 @@ wherever a schedule is read by more than one scheduler.
 ### Cron triggers are UTC
 
 Cloudflare cron triggers fire on **UTC** and offer no timezone option. Uganda
-is UTC+3 with no daylight saving, so `30 4 * * mon-fri` is **07:30 EAT**.
+is UTC+3 with no daylight saving, so `30 5 * * mon-fri` is **08:30 EAT**.
 
 Typing `30 7 * * *` into the dashboard — reading it as 07:30 local time —
-schedules **10:30 EAT**, three hours late. The drift is silent: the trigger
+schedules **10:30 EAT**, two hours late. The drift is silent: the trigger
 looks plausible in the UI and the Worker keeps firing on schedule. Change the
 schedule through `wrangler.toml` and redeploy rather than in the dashboard, so
 the repository stays the single source of truth and the two cannot drift.
@@ -175,7 +175,7 @@ still flagging a genuinely missing email the same day. It uses the automatic
 
 ## `cloudflare-dispatch-backstop.yml`
 
-This workflow runs at 08:15 EAT on weekdays. If no successful or in-progress
+This workflow runs at 09:15 EAT on weekdays. If no successful or in-progress
 `send-rates` run exists yet, it dispatches `send-rates.yml` directly through the
 GitHub API so the email still goes out the same morning.
 

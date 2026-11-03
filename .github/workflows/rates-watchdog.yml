@@ -3,7 +3,7 @@ name: Rates watchdog
 # Fails the day the rates email never arrives.
 #
 # The Cloudflare Worker can only report its own failures through Worker logs,
-# which nobody is watching at 07:30. This workflow closes that gap: if no
+# which nobody is watching at 08:30. This workflow closes that gap: if no
 # successful `send-rates` run exists once the fallback-delay window has passed,
 # it opens a GitHub issue. Issues notify by email, so the failure reaches you
 # even though the Worker that caused it stayed silent.
@@ -57,7 +57,7 @@ jobs:
             exit 0
           fi
 
-          # Give the 07:30 EAT trigger enough time to complete even when GitHub
+          # Give the 08:30 EAT trigger enough time to complete even when GitHub
           # schedule start is several hours late.
           if [ "$hour_eat" -lt 15 ]; then
             echo "Before the 15:00 EAT deadline. Waiting."
@@ -98,7 +98,7 @@ jobs:
           Check, in order:
           1. Cloudflare Worker \`bou-rates-trigger\` → Observability, for a failed or missing cron invocation.
           2. The Actions tab for this repository, for any failed \`send-rates\` run.
-          3. That the cron trigger is still \`30 4 * * mon-fri\` (04:30 UTC = 07:30 EAT) — a trigger set to \`30 7 * * *\` fires at 10:30 EAT, three hours late.
+          3. That the cron trigger is still \`30 5 * * mon-fri\` (05:30 UTC = 08:30 EAT) — a trigger set to \`30 7 * * *\` fires at 10:30 EAT, two hours late.
           
           Raised by \`rates-watchdog.yml\`.
           EOF

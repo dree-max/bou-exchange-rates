@@ -2,7 +2,7 @@
  * Cloudflare Worker that triggers the BOU exchange-rate workflow on a schedule.
  *
  * Why this exists: GitHub Actions schedules are best-effort. On the free tier
- * the observed delay for this repo was 3-6 hours (a 07:30 EAT schedule
+ * the observed delay for this repo was 3-6 hours (an 08:30 EAT schedule
  * actually ran at 13:49 EAT), which is far too late for an 08:00 deadline.
  * This Worker fires a workflow_dispatch on Cloudflare's schedule instead,
  * which has been reliable to the minute.
